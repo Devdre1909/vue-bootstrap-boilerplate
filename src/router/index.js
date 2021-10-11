@@ -1,30 +1,34 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+import authLayoutRoute from "./layout/auth";
+import dashboardLayoutRoute from "./layout/dashbaord";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    name: "Home",
-    component: Home,
+    name: "Landing",
+    component: () => import("../pages/index.vue"),
+    meta: {
+      title: "Home",
+    },
   },
-  {
-    path: "/about",
-    name: "About",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue"),
-  },
+  authLayoutRoute,
+  dashboardLayoutRoute,
 ];
 
 const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes,
+});
+
+// eslint-disable-next-line no-unused-vars
+router.afterEach((to, _from) => {
+  if (to.meta && to.meta.title) {
+    document.title = to.meta.title + " | Your Project Name";
+  }
 });
 
 export default router;
